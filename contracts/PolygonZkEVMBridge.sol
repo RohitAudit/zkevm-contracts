@@ -11,6 +11,7 @@ import "./interfaces/IPolygonZkEVMBridge.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/IERC20MetadataUpgradeable.sol";
 import "./lib/EmergencyManager.sol";
 import "./lib/GlobalExitRootLib.sol";
+import {NexusBridge} from "./nexus/NexusBridge.sol";
 
 /**
  * PolygonZkEVMBridge that will be deployed on both networks Ethereum and Polygon zkEVM
@@ -19,7 +20,7 @@ import "./lib/GlobalExitRootLib.sol";
 contract PolygonZkEVMBridge is
     DepositContract,
     EmergencyManager,
-    IPolygonZkEVMBridge
+    IPolygonZkEVMBridge, NexusBridge
 {
     using SafeERC20Upgradeable for IERC20Upgradeable;
 
@@ -164,7 +165,7 @@ contract PolygonZkEVMBridge is
             if (msg.value != amount) {
                 revert AmountDoesNotMatchMsgValue();
             }
-
+            bridgeBalances.Deposits += msg.value;
             // Ether is treated as ether from mainnet
             originNetwork = _MAINNET_NETWORK_ID;
         } else {
@@ -339,6 +340,8 @@ contract PolygonZkEVMBridge is
         if (originTokenAddress == address(0)) {
             // Transfer ether
             /* solhint-disable avoid-low-level-calls */
+            bridgeBalances.Withdrawals += msg.value;
+
             (bool success, ) = destinationAddress.call{value: amount}(
                 new bytes(0)
             );
