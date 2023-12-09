@@ -107,7 +107,7 @@ async function main() {
             }
         }
     }
-
+    console.log("loading deployer")
     // Load deployer
     let deployer;
     if (deployParameters.deployerPvtKey) {
@@ -159,6 +159,8 @@ async function main() {
      */
 
     // Deploy proxy admin:
+    console.log("deploying proxy admin")
+
     const proxyAdminFactory = await ethers.getContractFactory('ProxyAdmin', deployer);
     const deployTransactionAdmin = (proxyAdminFactory.getDeployTransaction()).data;
     const dataCallAdmin = proxyAdminFactory.interface.encodeFunctionData('transferOwnership', [deployer.address]);

@@ -31,6 +31,7 @@ const _IMPLEMENTATION_SLOT = '0x360894a13ba1a3210667c828492db98dca3e2076cc3735a9
 
 async function main() {
     // Constant variables
+
     const attemptsDeployProxy = 20;
     const networkIDL2 = 1;
     const globalExitRootL2Address = '0xa40d5f56745a118d0906a34e69aec8c0db1cb8fa';
@@ -58,11 +59,14 @@ async function main() {
     } = deployParameters;
 
     // Load deployer
+
     await ethers.provider.send('hardhat_impersonateAccount', [initialZkEVMDeployerOwner]);
     await ethers.provider.send('hardhat_setBalance', [initialZkEVMDeployerOwner, '0xffffffffffffffff']); // 18 ethers aprox
     const deployer = await ethers.getSigner(initialZkEVMDeployerOwner);
 
     // Deploy PolygonZkEVMDeployer if is not deployed already
+    console.log("load deployer")
+
     const [zkEVMDeployerContract, keylessDeployer] = await deployPolygonZkEVMDeployer(initialZkEVMDeployerOwner, deployer);
 
     /*
@@ -71,6 +75,8 @@ async function main() {
      */
 
     // Deploy proxy admin:
+    console.log("deploy proxy admin")
+
     const proxyAdminFactory = await ethers.getContractFactory('ProxyAdmin', deployer);
     const deployTransactionAdmin = (proxyAdminFactory.getDeployTransaction()).data;
     const dataCallAdmin = proxyAdminFactory.interface.encodeFunctionData('transferOwnership', [deployer.address]);
@@ -89,7 +95,7 @@ async function main() {
         deployer,
         overrideGasLimit,
     );
-
+    console.log("deploying proxy")
     /*
      * deploy proxy
      * Do not initialize directlythe proxy since we want to deploy the same code on L2 and this will alter the bytecode deployed of the proxy

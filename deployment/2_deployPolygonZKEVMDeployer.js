@@ -13,6 +13,7 @@ const deployParameters = require('./deploy_parameters.json');
 async function main() {
     // Load provider
     let currentProvider = ethers.provider;
+    console.log(currentProvider.chainId)
     if (deployParameters.multiplierGas || deployParameters.maxFeePerGas) {
         if (process.env.HARDHAT_NETWORK !== 'hardhat') {
             currentProvider = new ethers.providers.JsonRpcProvider(`https://${process.env.HARDHAT_NETWORK}.infura.io/v3/${process.env.INFURA_PROJECT_ID}`);
@@ -36,7 +37,7 @@ async function main() {
             }
         }
     }
-
+    console.log("loading deployer")
     // Load deployer
     let deployer;
     if (deployParameters.deployerPvtKey) {

@@ -11,9 +11,11 @@ const deployParameters = require('../deploy_parameters.json');
 async function main() {
     // Load provider
     let currentProvider = ethers.provider;
+    console.log("started the deployment process")
     if (deployParameters.multiplierGas || deployParameters.maxFeePerGas) {
         if (process.env.HARDHAT_NETWORK !== 'hardhat') {
-            currentProvider = new ethers.providers.JsonRpcProvider(`https://${process.env.HARDHAT_NETWORK}.infura.io/v3/${process.env.INFURA_PROJECT_ID}`);
+            console.log(GOERLI_URL);
+            currentProvider = new ethers.providers.JsonRpcProvider(process.env.GOERLI_URL);
             if (deployParameters.maxPriorityFeePerGas && deployParameters.maxFeePerGas) {
                 console.log(`Hardcoded gas used: MaxPriority${deployParameters.maxPriorityFeePerGas} gwei, MaxFee${deployParameters.maxFeePerGas} gwei`);
                 const FEE_DATA = {
